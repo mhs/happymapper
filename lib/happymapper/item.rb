@@ -59,8 +59,11 @@ module HappyMapper
     def xpath(namespace = self.namespace)
       xpath  = ''
       xpath += './/' if options[:deep]
-      xpath += "#{DEFAULT_NS}:" if namespace
-      xpath += tag
+      xpath += tag.split("/").map do |t|
+        x = ''
+        x += "#{DEFAULT_NS}:" if namespace
+        x += t
+      end.join("/")
       # puts "xpath: #{xpath}"
       xpath
     end
@@ -172,6 +175,7 @@ module HappyMapper
             nil
           end
         else
+          # TODO: ???
           yield(node[tag])
         end
       end

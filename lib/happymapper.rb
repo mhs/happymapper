@@ -275,15 +275,20 @@ module HappyMapper
           #
           # When a value exists we should append the value for the tag
           #
-          current_node << XML::Node.new(tag,item.to_s,element_namespace)
-
+          p = current_node
+          li = tag.split("/").count - 1
+          tag.split("/").each_with_index do |t, i|
+            n = XML::Node.new(t,li == i ? item.to_s : nil,element_namespace)
+            p << n
+            p = n
+          end
         else
           
           #
           # Normally a nil value would be ignored, however if specified then
           # an empty element will be written to the xml
           #
-          current_node << XML.Node.new(tag,nil,element_namespace) if element.options[:state_when_nil]
+          current_node << XML::Node.new(tag,nil,element_namespace) if element.options[:state_when_nil]
 
         end
 
