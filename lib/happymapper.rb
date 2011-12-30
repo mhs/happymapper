@@ -18,6 +18,16 @@ module HappyMapper
   end
 
   module ClassMethods
+    def inherited(base)
+      super
+      base.instance_variable_set("@attributes", {})
+      base.instance_variable_get("@attributes")[base.to_s] =  @attributes[to_s].dup if @attributes[to_s]
+      base.instance_variable_set("@elements", {})
+      base.instance_variable_get("@elements")[base.to_s] =  @elements[to_s].dup if @elements[to_s]
+      base.instance_variable_set("@registered_namespaces", @registered_namespaces.dup)
+      base.instance_variable_set("@tag_name", @tag_name.dup) if @tag_name
+    end
+
     def attribute(name, type, options={})
       attribute = Attribute.new(name, type, options)
       @attributes[to_s] ||= []
@@ -72,6 +82,7 @@ module HappyMapper
     def register_namespace(namespace, ns)
       @registered_namespaces.merge!(namespace => ns)
     end
+    attr_reader :registered_namespaces
 
     def tag(new_tag_name)
       @tag_name = new_tag_name.to_s

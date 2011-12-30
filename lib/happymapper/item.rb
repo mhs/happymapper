@@ -25,6 +25,13 @@ module HappyMapper
     def constant
       @constant ||= constantize(type)
     end
+  
+    def ==(other)
+      name    == other.name &&
+      type    == other.type &&
+      tag     == other.tag &&
+      options == other.options
+    end
         
     def from_xml_node(node, namespace)
       if primitive?

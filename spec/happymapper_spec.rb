@@ -107,6 +107,34 @@ describe HappyMapper do
     end
   end
 
+  describe "subclassing a class that includes HappyMapper" do
+    let(:parent)  { Class.new { include HappyMapper } }
+    let(:subklass){ Class.new(parent) }
+    
+    it "should inherit attributes" do
+      parent.attribute "foo", String
+      expected = HappyMapper::Attribute.new("foo", String)
+      subklass.attributes.should include(expected)
+    end
+
+    it "should inherit elements" do
+      parent.element "Item", String
+      expected = HappyMapper::Element.new("Item", String)
+      subklass.elements.should include(expected)
+    end
+
+    it "should inherit registered namespaces" do
+      parent.register_namespace "xsi", "example.com"
+      expected = {"xsi" => "example.com"}
+      subklass.registered_namespaces.should include(expected)
+    end
+
+    it "should inherit tag name" do
+      parent.tag "Foo"
+      subklass.tag_name.should include("Foo")
+    end
+  end
+
   describe "#attributes" do
     it "should only return attributes for the current class" do
       Post.attributes.size.should == 7

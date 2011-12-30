@@ -28,6 +28,38 @@ describe HappyMapper::Item do
     end
   end
 
+  describe "comparing" do
+    before do
+      @foo1 = HappyMapper::Item.new(:foo, String, :tag => 'foo')
+      @foo2 = HappyMapper::Item.new(:foo, String, :tag => 'foo')
+      @bar1 = HappyMapper::Item.new(:bar, String, :tag => 'bar')
+    end
+    
+    it 'should match identical items' do
+      @foo1.should eq(@foo2)
+    end
+    
+    it 'should not match different names' do
+      @foo2.name = "baz"
+      @foo1.should_not eq(@foo2)
+    end
+    
+    it 'should not match different tags' do
+      @foo2.tag = "woah"
+      @foo1.should_not eq(@foo2)
+    end
+    
+    it 'should not match different types' do
+      @foo2.type = "Integer"
+      @foo1.should_not eq(@foo2)
+    end
+    
+    it 'should not match different options' do
+      @foo2.options = {:namespace => "xsi"}
+      @foo1.should_not eq(@foo2)
+    end  
+  end
+
   describe "#constant" do
     it "should just use type if constant" do
       item = HappyMapper::Item.new(:foo, String)
