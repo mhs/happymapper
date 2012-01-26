@@ -207,7 +207,34 @@ describe HappyMapper do
     address.street_address.first.should == "123 Smith Dr"
     address.street_address.last.should == "Apt 31"
   end
+  
+  describe "parsing xml with subclasses types" do
+    let(:item_klass){ Class.new { include HappyMapper } }
+    let(:xml){ 
+      <<-XML.gsub(/^\s*\|/, '')
+        |<?xml version="1.0" encoding="UTF-8"?>
+        |<Items>
+        |  <Item>
+        |    <Id>1234</Id>
+        |  </Item>
+        |</Items>
+      XML
+    }
+    
+    before do
+      subclassed_type = Class.new(String)
+      item_klass.class_eval do
+        tag "Item"
+        element :Id, subclassed_type
+      end
+    end
 
+    it "should parse them" do
+      item = item_klass.parse(xml, :single => true)
+      item.Id.should eq("1234")
+    end
+  end
+  
   it "should parse xml with default namespace (amazon)" do
     file_contents = fixture_file('pita.xml')
     items = PITA::Items.parse(file_contents, :single => true)
@@ -220,7 +247,7 @@ describe HappyMapper do
     first.detail_page_url.should be_a_kind_of(URI)
     first.detail_page_url.to_s.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
     first.manufacturer.should == 'Addison-Wesley Professional'
-    first.product_group.should == '<ProductGroup>Book</ProductGroup>'
+    first.product_group.should == 'Book'
     second.asin.should == '047022388X'
     second.manufacturer.should == 'Wrox'
   end
