@@ -66,7 +66,13 @@ module HappyMapper
     end
     
     def primitive?
-      Types.include?(constant)
+      classes = []
+      clazz = constant
+      while clazz
+        classes << clazz
+        clazz = clazz.superclass
+      end
+      classes.detect { |c| Types.include?(c) }
     end
     
     def element?
