@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require 'spec'
+require 'rspec'
 require File.expand_path('../../lib/happymapper', __FILE__)
 
 def fixture_file(filename)
