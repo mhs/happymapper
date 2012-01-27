@@ -19,6 +19,7 @@ module HappyMapper
 
   module ClassMethods
     def inherited(base)
+      super
       base.instance_variable_set("@attributes", {})
       base.instance_variable_get("@attributes")[base.to_s] =  @attributes[to_s].dup if @attributes[to_s]
       base.instance_variable_set("@elements", {})
