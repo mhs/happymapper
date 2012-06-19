@@ -150,13 +150,13 @@ module HappyMapper
   # that it can be called recursively by classes that are also HappyMapper
   # classes, allowg for the composition of classes.
   #
-  def to_xml(parent_node = nil, default_namespace = nil)
+  def to_xml(parent_node = nil, default_namespace = nil, opts={})
 
     #
     # Create a tag that uses the tag name of the class that has no contents
     # but has the specified namespace or uses the default namespace
     #
-    current_node = XML::Node.new(self.class.tag_name)
+    current_node = XML::Node.new(opts[:tag] || self.class.tag_name)
 
 
     if parent_node
@@ -278,7 +278,7 @@ module HappyMapper
           # Other HappyMapper items that are convertable should not be called
           # with the current node and the namespace defined for the element.
           #
-          item.to_xml(current_node,element_namespace)
+          item.to_xml(current_node,element_namespace, :tag => tag)
 
         elsif item
 
