@@ -42,7 +42,7 @@ module ToXML
     #
     # Class composition
     #
-    element :country, 'Country', :tag => 'country'
+    element :country, 'ComplexCountry', :tag => 'country'
 
     def initialize(parameters)
       parameters.each_pair do |property,value|
@@ -53,13 +53,15 @@ module ToXML
   end
 
   #
-  # Country is composed above the in Address class. Here is a demonstration
+  # ComplexCountry is composed above the in Address class. Here is a demonstration
   # of how to_xml will handle class composition as well as utilizing the tag
   # value.
   #
-  class Country
+  # We use ComplexCountry instead of Country because that will expose that we are 
+  # properly handling outputting tag names, instead of the tag type.
+  class ComplexCountry
     include HappyMapper
-
+    
     attribute :code, String, :tag => 'countryCode'
     has_one :name, String, :tag => 'countryName'
 
@@ -81,7 +83,7 @@ module ToXML
         'housenumber' => '1313',
         'postcode' => '98103',
         'city' => 'Seattle',
-        'country' => Country.new(:name => 'USA', :code => 'us'),
+        'country' => ComplexCountry.new(:name => 'USA', :code => 'us'),
         'date_created' => '2011-01-01 15:00:00')
 
         address.dates_updated = ["2011-01-01 16:01:00","2011-01-02 11:30:01"]
