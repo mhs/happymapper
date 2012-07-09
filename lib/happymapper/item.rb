@@ -16,10 +16,16 @@ module HappyMapper
     def initialize(name, type, o={})
       self.name = name.to_s
       self.type = type
-      self.tag = o.delete(:tag) || name.to_s
+      self.tag = o.delete(:tag)
       self.options = o
       
       @xml_type = self.class.to_s.split('::').last.downcase
+    end
+
+    def tag
+      return @tag if @tag
+      return type.tag_name if type.respond_to?(:tag_name)
+      name.to_s
     end
     
     def constant
@@ -58,7 +64,7 @@ module HappyMapper
             end
           end
         else
-          constant.parse(node, options)
+          constant.parse(node, options.merge(:tag_name => tag))
         end
       end
     end

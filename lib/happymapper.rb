@@ -102,7 +102,7 @@ module HappyMapper
           node = XML::Parser.string(xml).parse.root
         end
 
-        root = node.name == tag_name
+        root = node.name == (options[:tag_name] || tag_name)
       end
 
       namespace = @namespace || (node.namespaces && node.namespaces.default)
@@ -110,7 +110,7 @@ module HappyMapper
 
       xpath = root ? '/' : './/'
       xpath += "#{DEFAULT_NS}:" if namespace
-      xpath += tag_name
+      xpath += (options[:tag_name] || tag_name)
 
       nodes = node.find(xpath, Array(namespace))
       collection = nodes.collect do |n|

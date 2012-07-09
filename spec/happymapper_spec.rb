@@ -381,6 +381,32 @@ describe HappyMapper do
     property.value.should == '85301'
   end
 
+  it "should be able to parse when the element overrides the type's tag name" do
+    money = Class.new do
+      include HappyMapper
+      tag 'Money'
+      element :Amount, Integer
+    end
+
+    klass = Class.new do
+      include HappyMapper
+      tag 'Account'
+      has_one :OpenBalance, money, :tag => "OpenBalance"
+    end
+
+    xml =<<-XML.gsub!(/^\s*\|/, '')
+      |<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+      |<Account>
+      |  <OpenBalance>
+      |    <Amount>10</Amount>
+      |  </OpenBalance>
+      |</Account>
+    XML
+
+    instance = klass.parse(xml)
+    instance.OpenBalance.Amount.should eq(10)
+  end
+
   it "should allow instantiating with a string" do
     module StringFoo
       class Bar
